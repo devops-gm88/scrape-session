@@ -18,9 +18,9 @@ import random
 import threading
 import time
 from collections.abc import Callable, Iterable
+from dataclasses import dataclass, replace
 from datetime import timezone
 from email.utils import parsedate_to_datetime
-from dataclasses import dataclass, field, replace
 from typing import Any, Optional, Union
 
 from .transport import (

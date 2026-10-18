@@ -38,7 +38,6 @@ from scrape_session import (  # noqa: E402
     ItemStatus,
     RateLimiter,
     Request,
-    Response,
     ResumeManifest,
     RetryEvent,
     RetryExhausted,
@@ -284,7 +283,13 @@ def fetch_one(
     except RetryExhausted as exc:
         reason = f"transport_error:{type(exc.last_error).__name__}"
         note(f"{item}: gave up after {exc.attempts} attempt(s) ({reason})")
-        return manifest.mark(item, ItemStatus.RETRYABLE_FAILURE, attempts=exc.attempts, reason=reason, url=url)
+        return manifest.mark(
+            item,
+            ItemStatus.RETRYABLE_FAILURE,
+            attempts=exc.attempts,
+            reason=reason,
+            url=url,
+        )
 
     assessment = check.assess(response)
     if not assessment.ok:
@@ -469,7 +474,9 @@ def main(argv: Optional[list[str]] = None) -> int:
             status = manifest2.status_of(item) or "missing"
             print(f"    {item}  requests={hits}  status={status}")
         print()
-        print(f"    /login requests: {site.hits.get('/login', 0)} for {sum(site.hits.values())} total requests")
+        login_hits = site.hits.get("/login", 0)
+        total_hits = sum(site.hits.values())
+        print(f"    /login requests: {login_hits} for {total_hits} total requests")
         print(f"    retries scheduled: {len(retries)}")
         for event in retries:
             print(f"        {event}")
@@ -521,7 +528,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(f"    manifest                : {workdir / 'manifest.jsonl'}")
         print(f"    session (0600)          : {workdir / 'session.json'}")
         if verbose:
-            print(f"    first manifest line     : {json.loads((workdir / 'manifest.jsonl').read_text().splitlines()[0])}")
+            first_line = json.loads((workdir / "manifest.jsonl").read_text().splitlines()[0])
+            print(f"    first manifest line     : {first_line}")
 
     if temporary and not args.keep:
         shutil.rmtree(workdir, ignore_errors=True)

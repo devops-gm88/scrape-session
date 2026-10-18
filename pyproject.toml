@@ -25,8 +25,23 @@ classifiers = [
 ]
 dependencies = []
 
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://github.com/devops-gm88/scrape-session"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 scrape_session = ["py.typed"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 110
+
+[tool.ruff.lint]
+# UP is deliberately not selected: the source keeps `typing.Optional` / `Union`
+# annotations on purpose, and rewriting them would be churn with no behaviour change.
+select = ["E", "F", "W", "I", "B"]

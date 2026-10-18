@@ -1,5 +1,9 @@
 # scrape-session
 
+[![CI](https://github.com/devops-gm88/scrape-session/actions/workflows/ci.yml/badge.svg)](https://github.com/devops-gm88/scrape-session/actions/workflows/ci.yml)
+[![Python versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
+
 Four small primitives for long-running extraction jobs, where the hard part is
 never the selector.
 

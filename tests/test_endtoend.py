@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import unittest
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,12 +21,12 @@ from tempfile import TemporaryDirectory
 from scrape_session import (
     IntegrityCheck,
     ItemStatus,
+    RateLimiter,
     Request,
     Response,
     ResumeManifest,
     RetryExhausted,
     RetryPolicy,
-    RateLimiter,
     SessionKeeper,
     UrllibTransport,
     as_fetch,
@@ -258,7 +257,14 @@ def gated(route, valid_tokens) -> "callable":
     return handler
 
 
-def document_routes(items: list[str], *, truncate: set[str] = (), login_page: set[str] = (), denied: set[str] = (), flaky: set[str] = ()) -> dict:
+def document_routes(
+    items: list[str],
+    *,
+    truncate: set[str] = (),
+    login_page: set[str] = (),
+    denied: set[str] = (),
+    flaky: set[str] = (),
+) -> dict:
     """Build one route per item id plus the interesting failure modes."""
     routes: dict = {}
     for item in items:
@@ -614,7 +620,13 @@ class PaginatedDirectoryTests(unittest.TestCase):
                 target = workdir / "out" / f"{item}.pdf"
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(response.body)
-                manifest.mark(item, ItemStatus.OK, checksum=assessment.checksum, size=assessment.size, path=target)
+                manifest.mark(
+                    item,
+                    ItemStatus.OK,
+                    checksum=assessment.checksum,
+                    size=assessment.size,
+                    path=target,
+                )
 
             self.assertEqual(manifest.completed_ids(), all_ids)
             self.assertEqual(manifest.status_counts(), {"ok": len(all_ids)})
