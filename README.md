@@ -10,6 +10,13 @@ never the selector.
 Standard library only. Python 3.10+. No dependencies, no network access needed to
 run the tests or the demo.
 
+```bash
+pip install git+https://github.com/devops-gm88/scrape-session.git
+```
+
+Not on PyPI yet - the GitHub URL above is the install. Nothing else is pulled in:
+the package has no dependencies.
+
 * **`SessionKeeper`** — sign in once, persist the session, reuse it next run,
   re-authenticate only when the session is genuinely gone.
 * **`ResumeManifest`** — record every finished item durably, so a run that dies
